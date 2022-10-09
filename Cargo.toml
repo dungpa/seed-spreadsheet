@@ -2,7 +2,7 @@
 version = "0.1.0"
 name = "seed-spreadsheet"
 repository = "https://github.com/seed-rs/seed-quickstart"
-authors = ["Anh-Dung Phan <phananhdung309@yahoo.com>"]
+authors = ["Anh-Dung Phan"]
 description = "App Description"
 categories = ["category"]
 license = "MIT"
@@ -16,7 +16,7 @@ crate-type = ["cdylib"]
 wasm-bindgen-test = "0.3.18"
 
 [dependencies]
-seed = "0.8.0"
+seed = "0.9.2"
 
 [profile.release]
 lto = true
