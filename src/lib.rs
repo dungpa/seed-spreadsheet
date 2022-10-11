@@ -59,9 +59,12 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 
 // `view` describes what to display.
 fn view(model: &Model) -> Node<Msg> {
-    let empty = td! [];
-    let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|h| { th! [h.to_string()] }).collect();
-    headers.insert(0, empty);
+    fn get_headers(model: &Model) -> Vec<Node<Msg>> {
+        let empty = td! [];
+        let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|h| { th! [h.to_string()] }).collect();
+        headers.insert(0, empty);
+        headers
+    }
 
     fn render_cell(h: &char, n: &i32) -> Node<Msg> {
         td! ["A"]
@@ -75,7 +78,7 @@ fn view(model: &Model) -> Node<Msg> {
     let rows = model.rows.iter().map (|r| { tr! [get_cells(&model, r)] });
 
     table! [
-        tr!(headers),
+        tr!(get_headers(model)),
         tbody!(rows),
     ]
 }
