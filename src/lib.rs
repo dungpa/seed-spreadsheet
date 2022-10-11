@@ -4,6 +4,7 @@
 #![allow(clippy::wildcard_imports)]
 
 use std::collections::HashMap;
+
 use seed::{prelude::*, *};
 
 // ------ ------
@@ -62,20 +63,20 @@ fn view(model: &Model) -> Node<Msg> {
     let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|h| { th! [h.to_string()] }).collect();
     headers.insert(0, empty);
 
-    // fn render_cell(pos: Position) {
-    //     td! []
-    // }
+    fn render_cell(h: &char, n: &i32) -> Node<Msg> {
+        td! ["A"]
+    }
 
-    // fn get_cells(n) {
-    //     let mut cells = model.cols.iter().map(|h| { render_cell (h, n) });
-    //     cells.insert(0, th! [n.to_string()]);
-    //     cells
-    // }
-    //let rows = state.rows.iter().map (|r| { tr! [get_cells(r)] });
+    fn get_cells(model: &Model, n: &i32) -> Vec<Node<Msg>> {
+        let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|h| { render_cell(h, n) }).collect();
+        cells.insert(0, th! [n.to_string()]);
+        cells
+    }
+    let rows = model.rows.iter().map (|r| { tr! [get_cells(&model, r)] });
 
     table! [
-        tr! [headers],
-        //tbody! [rows]
+        tr!(headers),
+        tbody!(rows),
     ]
 }
 
