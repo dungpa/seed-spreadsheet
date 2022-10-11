@@ -3,6 +3,7 @@
 // but some rules are too "annoying" or are not applicable for your case.)
 #![allow(clippy::wildcard_imports)]
 
+use std::collections::HashMap;
 use seed::{prelude::*, *};
 
 // ------ ------
@@ -11,16 +12,21 @@ use seed::{prelude::*, *};
 
 // `init` describes what should happen when your app started.
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
-    Model { counter: 0 }
+    Model { rows: vec![], cols: vec![], active: None, cells: HashMap::new() }
 }
 
 // ------ ------
 //     Model
 // ------ ------
 
+type Position = (char, i32);
+
 // `Model` describes our app state.
 struct Model {
-    counter: i32,
+    rows: Vec<i32>,
+    cols: Vec<char>,
+    active: Option<Position>,
+    cells: HashMap<Position, String>,
 }
 
 // ------ ------
@@ -37,7 +43,7 @@ enum Msg {
 // `update` describes how to handle each `Msg`.
 fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
     match msg {
-        Msg::Increment => model.counter += 1,
+        Msg::Increment => (),
     }
 }
 
@@ -50,7 +56,7 @@ fn view(model: &Model) -> Node<Msg> {
     div![
         "This is a counter: ",
         C!["counter"],
-        button![model.counter, ev(Ev::Click, |_| Msg::Increment),],
+        button![0, ev(Ev::Click, |_| Msg::Increment),],
     ]
 }
 
