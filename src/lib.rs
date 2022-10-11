@@ -66,20 +66,23 @@ fn view(model: &Model) -> Node<Msg> {
         headers
     }
 
-    fn render_cell(h: &char, n: &i32) -> Node<Msg> {
-        td! ["A"]
-    }
+    fn get_rows(model: &Model) -> Vec<Node<Msg>> {
+        fn render_cell(h: &char, n: &i32) -> Node<Msg> {
+            td! ["A"]
+        }
 
-    fn get_cells(model: &Model, n: &i32) -> Vec<Node<Msg>> {
-        let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|h| { render_cell(h, n) }).collect();
-        cells.insert(0, th! [n.to_string()]);
-        cells
+        fn get_cells(model: &Model, n: &i32) -> Vec<Node<Msg>> {
+            let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|h| { render_cell(h, n) }).collect();
+            cells.insert(0, th! [n.to_string()]);
+            cells
+        }
+
+        model.rows.iter().map (|r| { tr! [get_cells(&model, r)] }).collect()
     }
-    let rows = model.rows.iter().map (|r| { tr! [get_cells(&model, r)] });
 
     table! [
         tr!(get_headers(model)),
-        tbody!(rows),
+        tbody!(get_rows(model)),
     ]
 }
 
