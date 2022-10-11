@@ -12,7 +12,12 @@ use seed::{prelude::*, *};
 
 // `init` describes what should happen when your app started.
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
-    Model { rows: vec![], cols: vec![], active: None, cells: HashMap::new() }
+    Model { 
+        rows: (1..16).collect(), 
+        cols: ('A'..'L').collect(), 
+        active: None, 
+        cells: HashMap::new() 
+    }
 }
 
 // ------ ------
@@ -53,10 +58,24 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 
 // `view` describes what to display.
 fn view(model: &Model) -> Node<Msg> {
-    div![
-        "This is a counter: ",
-        C!["counter"],
-        button![0, ev(Ev::Click, |_| Msg::Increment),],
+    let empty = td! [];
+    let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|h| { th! [h.to_string()] }).collect();
+    headers.insert(0, empty);
+
+    // fn render_cell(pos: Position) {
+    //     td! []
+    // }
+
+    // fn get_cells(n) {
+    //     let mut cells = model.cols.iter().map(|h| { render_cell (h, n) });
+    //     cells.insert(0, th! [n.to_string()]);
+    //     cells
+    // }
+    //let rows = state.rows.iter().map (|r| { tr! [get_cells(r)] });
+
+    table! [
+        tr! [headers],
+        //tbody! [rows]
     ]
 }
 
