@@ -1,6 +1,7 @@
 # seed-spreadsheet
 
 Online spreadsheet written in Rust using Seed framework.
+Inspired by https://tomasp.net/blog/2018/write-your-own-excel/.
 
 ## 1. Install / check required tools
 
@@ -27,7 +28,7 @@ Online spreadsheet written in Rust using Seed framework.
 
 ## 3. Write your website
 
-1. Open [localhost:8000](http://localhost:8000) in a browser (I recommend Firefox and Chrome).
+1. Open [localhost:8081](http://localhost:8081) in a browser (I recommend Firefox and Chrome).
 1. Modify source files (e.g. `/src/lib.rs` or `/index.html`).
 1. Watch compilation in the terminal tab where you run `cargo make watch`.
 1. You can watch dev-server responses in the tab where you run `cargo make serve`.
