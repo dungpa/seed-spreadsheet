@@ -59,30 +59,47 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 
 // `view` describes what to display.
 fn view(model: &Model) -> Node<Msg> {
-    fn get_headers(model: &Model) -> Vec<Node<Msg>> {
+    fn create_headers(model: &Model) -> Vec<Node<Msg>> {
         let empty = td! [];
         let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|c| { th! [c.to_string()] }).collect();
         headers.insert(0, empty);
         headers
     }
 
-    fn get_rows(model: &Model) -> Vec<Node<Msg>> {
-        fn render_cell(col: &char, row: &i32) -> Node<Msg> {
-            td! ["A"]
+    fn create_rows(model: &Model) -> Vec<Node<Msg>> {
+        fn render_cell(model: &Model, col: &char, row: &i32) -> Node<Msg> {
+            let value = model.cells.get(&(*col, *row));
+            let val =
+                match value {
+                    Some(val) => Some(val.clone()),
+                    None => Some("B".to_owned()),
+                };
+            td! [
+                if val.is_none() { 
+                    style! {
+                        St::Background => "#ffb0b0"
+                    }
+                } else {
+                    style! {
+                        St::Background => "white"
+                    }
+                },
+                val.unwrap_or("#ERR".to_owned()),
+            ]
         }
 
-        fn get_cells(model: &Model, row: &i32) -> Vec<Node<Msg>> {
-            let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|c| { render_cell(c, row) }).collect();
-            cells.insert(0, th! [n.to_string()]);
+        fn create_cells(model: &Model, row: &i32) -> Vec<Node<Msg>> {
+            let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|c| { render_cell(model, c, row) }).collect();
+            cells.insert(0, th! [row.to_string()]);
             cells
         }
 
-        model.rows.iter().map (|r| { tr! [get_cells(&model, r)] }).collect()
+        model.rows.iter().map (|r| { tr! [create_cells(&model, r)] }).collect()
     }
 
     table! [
-        tr!(get_headers(model)),
-        tbody!(get_rows(model)),
+        tr!(create_headers(model)),
+        tbody!(create_rows(model)),
     ]
 }
 
