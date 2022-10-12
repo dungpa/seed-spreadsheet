@@ -61,18 +61,18 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 fn view(model: &Model) -> Node<Msg> {
     fn get_headers(model: &Model) -> Vec<Node<Msg>> {
         let empty = td! [];
-        let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|h| { th! [h.to_string()] }).collect();
+        let mut headers: Vec<Node<Msg>> = model.cols.iter().map(|c| { th! [c.to_string()] }).collect();
         headers.insert(0, empty);
         headers
     }
 
     fn get_rows(model: &Model) -> Vec<Node<Msg>> {
-        fn render_cell(h: &char, n: &i32) -> Node<Msg> {
+        fn render_cell(col: &char, row: &i32) -> Node<Msg> {
             td! ["A"]
         }
 
-        fn get_cells(model: &Model, n: &i32) -> Vec<Node<Msg>> {
-            let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|h| { render_cell(h, n) }).collect();
+        fn get_cells(model: &Model, row: &i32) -> Vec<Node<Msg>> {
+            let mut cells: Vec<Node<Msg>> = model.cols.iter().map(|c| { render_cell(c, row) }).collect();
             cells.insert(0, th! [n.to_string()]);
             cells
         }
