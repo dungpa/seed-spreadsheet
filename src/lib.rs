@@ -72,7 +72,7 @@ fn view(model: &Model) -> Node<Msg> {
             let val =
                 match value {
                     Some(val) => Some(val.clone()),
-                    None => Some("O".to_owned()),
+                    None => Some("".to_owned()),
                 };
             td! [
                 if val.is_none() { 
