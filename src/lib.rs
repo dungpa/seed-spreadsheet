@@ -14,8 +14,8 @@ use seed::{prelude::*, *};
 // `init` describes what should happen when your app started.
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model { 
-        rows: (1..16).collect(), 
-        cols: ('A'..'L').collect(), 
+        rows: (1..17).collect(), 
+        cols: ('A'..'M').collect(), 
         active: None, 
         cells: HashMap::new() 
     }
@@ -68,24 +68,39 @@ fn view(model: &Model) -> Node<Msg> {
 
     fn create_rows(model: &Model) -> Vec<Node<Msg>> {
         fn render_cell(model: &Model, col: &char, row: &i32) -> Node<Msg> {
-            let value = model.cells.get(&(*col, *row));
-            let val =
-                match value {
-                    Some(val) => Some(val.clone()),
-                    None => Some("".to_owned()),
-                };
-            td! [
-                if val.is_none() { 
-                    style! {
-                        St::Background => "#ffb0b0"
-                    }
-                } else {
-                    style! {
-                        St::Background => "white"
-                    }
-                },
-                val.unwrap_or("#ERR".to_owned()),
-            ]
+            let pos = (*col, *row);
+            let value = model.cells.get(&pos);
+            if model.active == Some(pos) {
+                td! [
+                    C! ["selected"],
+                    input! [
+                        attrs! {
+                            At::AutoFocus => true,
+                            At::Value => value.unwrap_or(&"".to_owned());
+                        },
+                    ]
+                ]
+            } else {
+                let val =
+                    match value {
+                        // TODO: parsing and evaluating cells should happen here.
+                        Some(val) => Some(val.clone()),
+                        None => Some("".to_owned()),
+                    };
+                td! [
+                    if val.is_none() { 
+                        style! {
+                            St::Background => "#ffb0b0"
+                        }
+                    } else {
+                        style! {
+                            St::Background => "white"
+                        }
+                    },
+                    val.unwrap_or("#ERR".to_owned()),
+                ]
+            }
+            
         }
 
         fn create_cells(model: &Model, row: &i32) -> Vec<Node<Msg>> {
