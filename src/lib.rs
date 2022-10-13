@@ -3,9 +3,12 @@
 // but some rules are too "annoying" or are not applicable for your case.)
 #![allow(clippy::wildcard_imports)]
 
+mod types;
+
 use std::collections::HashMap;
 
 use seed::{prelude::*, *};
+use crate::types::*;
 
 // ------ ------
 //     Init
@@ -22,28 +25,8 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 }
 
 // ------ ------
-//     Model
-// ------ ------
-
-type Position = (char, i32);
-
-// `Model` describes our app state.
-struct Model {
-    rows: Vec<i32>,
-    cols: Vec<char>,
-    active: Option<Position>,
-    cells: HashMap<Position, String>,
-}
-
-// ------ ------
 //    Update
 // ------ ------
-
-// `Msg` describes the different events you can modify state with.
-enum Msg {
-    StartEdit(Position),
-    UpdateValue(Position, String)
-}
 
 // `update` describes how to handle each `Msg`.
 fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
