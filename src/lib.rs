@@ -39,17 +39,17 @@ struct Model {
 //    Update
 // ------ ------
 
-// (Remove the line below once any of your `Msg` variants doesn't implement `Copy`.)
-#[derive(Copy, Clone)]
 // `Msg` describes the different events you can modify state with.
 enum Msg {
-    Increment,
+    StartEdit(Position),
+    UpdateValue(Position, String)
 }
 
 // `update` describes how to handle each `Msg`.
 fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
     match msg {
-        Msg::Increment => (),
+        Msg::StartEdit(pos) => { model.active = Some(pos); },
+        Msg::UpdateValue(pos, value) => (),
     }
 }
 
@@ -98,6 +98,7 @@ fn view(model: &Model) -> Node<Msg> {
                         }
                     },
                     val.unwrap_or("#ERR".to_owned()),
+                    ev(Ev::Click, move |_| Msg::StartEdit(pos)),
                 ]
             }
             
