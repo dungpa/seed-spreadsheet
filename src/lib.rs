@@ -32,7 +32,7 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
     match msg {
         Msg::StartEdit(pos) => { model.active = Some(pos); },
-        Msg::UpdateValue(pos, value) => (),
+        Msg::UpdateValue(pos, value) => { model.cells.insert(pos, value); },
     }
 }
 
@@ -61,6 +61,7 @@ fn view(model: &Model) -> Node<Msg> {
                             At::AutoFocus => true,
                             At::Value => value.unwrap_or(&"".to_owned());
                         },
+                        input_ev(Ev::Input, move |v| Msg::UpdateValue(pos, v)),
                     ]
                 ]
             } else {
@@ -96,9 +97,14 @@ fn view(model: &Model) -> Node<Msg> {
         model.rows.iter().map (|r| { tr! [create_cells(&model, r)] }).collect()
     }
 
-    table! [
-        tr!(create_headers(model)),
-        tbody!(create_rows(model)),
+    div! [
+        h4! [
+            "Double click on a cell for editing.",
+        ],
+        table! [
+            tr!(create_headers(model)),
+            tbody!(create_rows(model)),
+        ]
     ]
 }
 
