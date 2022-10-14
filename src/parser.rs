@@ -30,7 +30,7 @@ fn parse_bracket(input: &str) -> IResult<&str, Expr> {
 }
 
 fn parse_term(input: &str) -> IResult<&str, Expr> {
-    alt((alt((parse_number, parse_reference)), parse_bracket))(input)
+    alt((parse_number, parse_reference, parse_bracket))(input)
 }
 
 fn create_binary(((expr1, operator), expr2): ((Expr, char), Expr)) -> Expr {
@@ -38,9 +38,7 @@ fn create_binary(((expr1, operator), expr2): ((Expr, char), Expr)) -> Expr {
 }
 
 fn parse_operator(input: &str) -> IResult<&str, char> {
-    let add_subtract = alt((char('+'), char('-')));
-    let mult_divide = alt((char('*'), char('/')));
-    alt((add_subtract, mult_divide))(input)
+    alt((char('+'), char('-'), char('*'), char('/')))(input)
 }
 
 fn parse_binary(input: &str) -> IResult<&str, Expr> {
