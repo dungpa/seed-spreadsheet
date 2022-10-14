@@ -63,7 +63,8 @@ fn parse_equation(input: &str) -> IResult<&str, Expr> {
 
 // Run the parser on a given input
 pub fn run(input: &str) -> Option<Expr> {
-    let (_, expr) = parse_equation(input).unwrap();
-    // TODO: return Result value here.
-    Some(expr)
+    match parse_equation(input) {
+         Ok((_, expr)) => Some(expr),
+         Err(_) => None
+    }
 }
