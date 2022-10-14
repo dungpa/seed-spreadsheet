@@ -4,6 +4,7 @@
 #![allow(clippy::wildcard_imports)]
 
 mod types;
+mod parser;
 mod evaluator;
 
 use std::collections::HashMap;
