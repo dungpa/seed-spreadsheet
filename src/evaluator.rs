@@ -1,8 +1,10 @@
-use nom::IResult;
+use std::collections::*;
+
 use nom::character::complete::{alpha1, digit1, space0, char};
 use nom::combinator::map;
 use nom::sequence::{delimited, pair, preceded};
 use nom::branch::alt;
+use nom::IResult;
 
 type Pos = (char, i32);
 
@@ -65,4 +67,61 @@ fn parse_formula(input: &str) -> IResult<&str, Expr> {
 // Equation you can write in a cell is either number or a formula
 fn parse_equation(input: &str) -> IResult<&str, Expr> {
     delimited(space0, alt((parse_formula, parse_number)), space0)(input)
+}
+
+// Run the parser on a given input
+fn parse(input: &str) -> Option<Expr> {
+    let (_, expr) = parse_equation(input).unwrap();
+    // TODO: return Result value here.
+    Some(expr)
+}
+
+fn evaluate(visited: &mut HashSet<Pos>, cells: &HashMap<Pos, String>, expr: Expr) -> Option<i32> { 
+  match expr {
+    Expr::Number(num) => Some(num),
+    Expr::Binary(e1, op, e2) => {
+        match evaluate(visited, cells, *e1) {
+            Some(val1) => {
+                match evaluate(visited, cells, *e2) {
+                    Some(val2) => {
+                        match op {
+                            '+' => Some(val1 + val2),
+                            '-' => Some(val1 - val2),
+                            '*' => Some(val1 * val2),
+                            '/' => Some(val1 / val2),
+                            _ => None 
+                        }
+                    },
+                    None => None
+                }
+            },
+            None => None
+        }
+
+    }
+    Expr::Reference(pos) => {
+        if visited.contains(&pos) {
+            None
+        } else {
+            match cells.get(&pos) {
+                Some(value) => {
+                    match parse(value) {
+                        Some(parsed) => {
+                            visited.insert(pos);
+                            evaluate(visited, cells, parsed)
+                        },
+                        None => None
+                    }
+                },
+                None => None
+            }
+        }
+    }
+  }
+}
+
+fn run (value: &str, cells: &HashMap<Pos, String>) -> Option<i32> {
+    let val = parse(value)?;
+    let mut visited = HashSet::new();
+    evaluate(&mut visited, cells, val)
 }
