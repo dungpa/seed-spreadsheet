@@ -1,9 +1,9 @@
-use crate::parser::*;
+use crate::types::*;
 use crate::*;
 
 use std::collections::*;
 
-fn evaluate(visited: &mut HashSet<Pos>, cells: &HashMap<Pos, String>, expr: Expr) -> Option<i32> { 
+fn evaluate(visited: &mut HashSet<Position>, cells: &HashMap<Position, String>, expr: Expr) -> Option<i32> { 
   match expr {
     Expr::Number(num) => Some(num),
     Expr::Binary(e1, op, e2) => {
@@ -47,7 +47,7 @@ fn evaluate(visited: &mut HashSet<Pos>, cells: &HashMap<Pos, String>, expr: Expr
   }
 }
 
-pub fn run (value: &str, cells: &HashMap<Pos, String>) -> Option<i32> {
+pub fn run (value: &str, cells: &HashMap<Position, String>) -> Option<i32> {
     let val = parser::run(value)?;
     let mut visited = HashSet::new();
     evaluate(&mut visited, cells, val)

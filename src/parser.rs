@@ -1,16 +1,10 @@
+use crate::types::*;
+
 use nom::character::complete::{alpha1, digit1, space0, char};
 use nom::combinator::map;
 use nom::sequence::{delimited, pair, preceded};
 use nom::branch::alt;
 use nom::IResult;
-
-pub type Pos = (char, i32);
-
-pub enum Expr {
-  Number(i32),
-  Reference(Pos),
-  Binary(Box<Expr>, char, Box<Expr>)
-}
 
 fn create_number(number: &str) -> Expr {
     let num = number.parse::<i32>().unwrap();

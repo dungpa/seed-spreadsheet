@@ -4,7 +4,13 @@ use std::collections::HashMap;
 //     Model
 // ------ ------
 
-type Position = (char, i32);
+pub type Position = (char, i32);
+
+pub enum Expr {
+  Number(i32),
+  Reference(Position),
+  Binary(Box<Expr>, char, Box<Expr>)
+}
 
 // `Model` describes our app state.
 pub struct Model {
