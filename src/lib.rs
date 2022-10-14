@@ -69,8 +69,12 @@ fn view(model: &Model) -> Node<Msg> {
             } else {
                 let val =
                     match value {
-                        // TODO: parsing and evaluating cells should happen here.
-                        Some(val) => Some(val.clone()),
+                        Some(val) => {
+                            match evaluator::run(val, &model.cells) {
+                                Some(v) => Some(v.to_string()),
+                                None => None
+                            }
+                        },
                         None => Some("".to_owned()),
                     };
                 td! [
