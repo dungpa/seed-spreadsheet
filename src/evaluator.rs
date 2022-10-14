@@ -1,7 +1,7 @@
 use nom::IResult;
 use nom::character::complete::{alpha1, digit1, space0, char};
 use nom::combinator::map;
-use nom::sequence::{delimited, pair, tuple};
+use nom::sequence::{delimited, pair, preceded};
 use nom::branch::alt;
 
 type Pos = (char, i32);
@@ -55,4 +55,14 @@ fn parse_binary(input: &str) -> IResult<&str, Expr> {
 
 fn parse_expr(input: &str) -> IResult<&str, Expr> {
     alt((parse_binary, parse_term))(input)
+}
+
+// Formula starts with `=` followed by expression
+fn parse_formula(input: &str) -> IResult<&str, Expr> {
+    preceded(char('='), preceded(space0, parse_expr))(input)
+}
+
+// Equation you can write in a cell is either number or a formula
+fn parse_equation(input: &str) -> IResult<&str, Expr> {
+    delimited(space0, alt((parse_formula, parse_number)), space0)(input)
 }
