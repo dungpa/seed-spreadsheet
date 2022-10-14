@@ -16,7 +16,7 @@ fn parse_number(input: &str) -> IResult<&str, Expr> {
 }
 
 fn create_reference((col, row): (&str, &str)) -> Expr {
-    let c = col.chars().nth(0).unwrap();
+    let c = col.chars().next().unwrap();
     let r = row.parse::<i32>().unwrap();
     Expr::Reference((c, r))
 }

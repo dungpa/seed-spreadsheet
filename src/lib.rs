@@ -70,10 +70,7 @@ fn view(model: &Model) -> Node<Msg> {
                 let val =
                     match value {
                         Some(val) => {
-                            match evaluator::run(val, &model.cells) {
-                                Some(v) => Some(v.to_string()),
-                                None => None
-                            }
+                            evaluator::run(val, &model.cells).map(|v| v.to_string())
                         },
                         None => Some("".to_owned()),
                     };
@@ -87,7 +84,7 @@ fn view(model: &Model) -> Node<Msg> {
                             St::Background => "white"
                         }
                     },
-                    val.unwrap_or("#ERR".to_owned()),
+                    val.unwrap_or_else(|| "#ERR".to_owned()),
                     ev(Ev::Click, move |_| Msg::StartEdit(pos)),
                 ]
             }
@@ -100,7 +97,7 @@ fn view(model: &Model) -> Node<Msg> {
             cells
         }
 
-        model.rows.iter().map (|r| { tr! [create_cells(&model, r)] }).collect()
+        model.rows.iter().map (|r| { tr! [create_cells(model, r)] }).collect()
     }
 
     div! [
