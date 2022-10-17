@@ -32,22 +32,20 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 //    Update
 // ------ ------
 
-static ENTER_KEY_CODE: u32 = 12;
+static ENTER_KEY_CODE: u32 = 13;
 
 // `update` describes how to handle each `Msg`.
 fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
     match msg {
         Msg::StartEdit(pos) => { model.active = Some(pos); },
-        Msg::KeyDown(key_code) => {
-            if key_code == ENTER_KEY_CODE {
-                match model.active {
-                    Some((col, row)) => {
-                        let new_pos = (col, (row + 1) % ROW_COUNT); 
-                        model.active = Some(new_pos);
-                    },
-                    None => ()
-                } 
-            }
+        Msg::GoToNextRow => {
+            match model.active {
+                Some((col, row)) => {
+                    let new_pos = (col, (row + 1) % ROW_COUNT); 
+                    model.active = Some(new_pos);
+                },
+                None => ()
+            } 
         },
         Msg::UpdateValue(pos, value) => { model.cells.insert(pos, value); },
     }
@@ -78,7 +76,9 @@ fn view(model: &Model) -> Node<Msg> {
                             At::AutoFocus => true,
                             At::Value => value.unwrap_or(&"".to_owned());
                         },
-                        keyboard_ev(Ev::KeyDown, |ev| Msg::KeyDown(ev.key_code())),
+                        keyboard_ev(Ev::KeyDown, |ke| {
+                            IF!(ke.key_code() == ENTER_KEY_CODE => Msg::GoToNextRow)
+                        }),
                         input_ev(Ev::Input, move |v| Msg::UpdateValue(pos, v)),
                     ]
                 ]

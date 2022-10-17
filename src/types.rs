@@ -23,6 +23,6 @@ pub struct Model {
 // `Msg` describes the different events you can modify state with.
 pub enum Msg {
     StartEdit(Position),
-    KeyDown(u32),
+    GoToNextRow,
     UpdateValue(Position, String)
 }
