@@ -16,6 +16,8 @@ use crate::types::*;
 //     Init
 // ------ ------
 
+static ROW_COUNT: i32 = 16;
+
 // `init` describes what should happen when your app started.
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model { 
@@ -30,10 +32,23 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 //    Update
 // ------ ------
 
+static ENTER_KEY_CODE: u32 = 12;
+
 // `update` describes how to handle each `Msg`.
 fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
     match msg {
         Msg::StartEdit(pos) => { model.active = Some(pos); },
+        Msg::KeyDown(key_code) => {
+            if key_code == ENTER_KEY_CODE {
+                match model.active {
+                    Some((col, row)) => {
+                        let new_pos = (col, (row + 1) % ROW_COUNT); 
+                        model.active = Some(new_pos);
+                    },
+                    None => ()
+                } 
+            }
+        },
         Msg::UpdateValue(pos, value) => { model.cells.insert(pos, value); },
     }
 }
@@ -63,6 +78,7 @@ fn view(model: &Model) -> Node<Msg> {
                             At::AutoFocus => true,
                             At::Value => value.unwrap_or(&"".to_owned());
                         },
+                        keyboard_ev(Ev::KeyDown, |ev| Msg::KeyDown(ev.key_code())),
                         input_ev(Ev::Input, move |v| Msg::UpdateValue(pos, v)),
                     ]
                 ]
