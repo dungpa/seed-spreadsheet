@@ -35,17 +35,23 @@ fn create_number(number: &str) -> CResult<&str, Expr> {
 }
 
 fn parse_number(input: &str) -> CResult<&str, Expr> {
-    delimited(space0, digit1, space0)(input).and_then(|(_, o)|create_number(o))
+    delimited(space0, digit1, space0)(input).and_then(|(_, o)| create_number(o))
 }
 
-fn create_reference((col, row): (&str, &str)) -> Expr {
-    let c = col.chars().next().unwrap();
-    let r = row.parse::<i32>().unwrap();
-    Expr::Reference((c, r))
+fn create_reference<'a>(input: &'a str, (col, row): (&str, &str)) -> CResult<&'a str, Expr> {
+    match col.chars().next() {
+        Some(c) => {
+            match row.parse::<i32>() {
+                Ok(r) => Ok((input, Expr::Reference((c, r)))),
+                Err(_) => Err(Error(CustomError::Conversion))
+            }
+        },
+        None => Err(Error(CustomError::Conversion))
+    }
 }
 
 fn parse_reference(input: &str) -> CResult<&str, Expr> {
-    map(pair(alpha1, digit1), create_reference)(input)
+    pair(alpha1, digit1)(input).and_then(|(i, o)| create_reference(i, o))
 }
 
 fn parse_bracket(input: &str) -> CResult<&str, Expr> {
