@@ -11,7 +11,7 @@ use nom::error::ErrorKind;
 
 #[derive(PartialEq)]
 enum CustomError<I> {
-  Conversion,
+  Conversion(String),
   Nom(I, ErrorKind),
 }
 
@@ -30,7 +30,7 @@ type CResult<I, T> = IResult<I, T, CustomError<I>>;
 fn create_number(number: &str) -> CResult<&str, Expr> {
     match number.parse::<i32>() {
         Ok(num) => Ok((number, Expr::Number(num))),
-        Err(_) => Err(Error(CustomError::Conversion))
+        Err(_) => Err(Error(CustomError::Conversion(number.to_owned())))
     }
 }
 
@@ -43,10 +43,10 @@ fn create_reference<'a>(input: &'a str, (col, row): (&str, &str)) -> CResult<&'a
         Some(c) => {
             match row.parse::<i32>() {
                 Ok(r) => Ok((input, Expr::Reference((c, r)))),
-                Err(_) => Err(Error(CustomError::Conversion))
+                Err(_) => Err(Error(CustomError::Conversion(row.to_owned())))
             }
         },
-        None => Err(Error(CustomError::Conversion))
+        None => Err(Error(CustomError::Conversion(col.to_owned())))
     }
 }
 
